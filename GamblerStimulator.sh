@@ -12,6 +12,7 @@ read -p "Enter the number of days : " noOfDays
 read -p "Enter the number of Games : " noOfGames
 read -p "Enter the % to resign for the day " resignValue
 
+declare -A wonlost
 function resignLow()
 {
 	resignVal1=$(( ($resignValue*$stake)/100 ))
@@ -33,7 +34,8 @@ for (( i=1; i<=$noOfDays; i++ ))
 do
 	stake=$(( $stake +100 ))
 	for(( j=1; j<=$noOfGames; j++ ))
-	do
+	do	
+		echo nOFDAYS $i
 		bet=$(( $bet +1 ))
 		winLose=$(( RANDOM%2 ))
 		echo $winLose
@@ -44,15 +46,23 @@ do
 			echo "He resigns for the day"
 			break
 		else
-		if [ $winLose -eq 1 ]
+
+			if [ $winLose -eq 1 ]
+			then
+				wonlost[win]=$(( ${wonlost[win]} +1 ))
+				stake=$(( $stake +1 ))
+			else
+				wonlost[lost]=$(( ${wonlost[lost]} +1 ))
+				stake=$(( $stake -1 ))
+			fi
+		fi
+		if [ $i -eq 20 ]
 		then
-			stake=$(( $stake +1 ))
-		else
-			stake=$(( $stake -1 ))
+			echo ${!wonlost[@]}
 		fi
-		fi
+
 	done
 done
 echo stake : $stake
 echo bets : $bet
-echo value : $value
+#echo value : $value
